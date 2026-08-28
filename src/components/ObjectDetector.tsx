@@ -28,6 +28,8 @@ export function ObjectDetector() {
       .catch((error) => {
         console.error("Gagal load model:", error);
       });
+    console.log("crossOriginIsolated:", window.crossOriginIsolated);
+    alert("crossOriginIsolated: " + window.crossOriginIsolated);
     return () => {
       stopCamera();
     };
