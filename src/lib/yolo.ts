@@ -116,10 +116,8 @@ export async function loadModel() {
   if (!sessionLoadPromise) {
     ort.env.wasm.numThreads = Math.min(4, navigator.hardwareConcurrency || 1);
     ort.env.wasm.simd = true;
-
     sessionLoadPromise = ort.InferenceSession.create("/models/yolo11n.onnx", {
-      // WebGPU akan otomatis fallback ke wasm kalau tidak didukung browser.
-      executionProviders: ["webgpu", "wasm"],
+      executionProviders: ["wasm"], // WebGPU mobile masih buggy, pakai wasm dulu
     });
   }
   session = await sessionLoadPromise;
@@ -243,6 +241,7 @@ export async function detect(
 
   const outputs = await model.run({ [inputName]: tensor });
   const output = outputs[model.outputNames[0]];
+  console.log("output.dims:", output.dims);
   const data = output.data as Float32Array;
 
   const detections: Detection[] = [];
